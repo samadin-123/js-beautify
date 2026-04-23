@@ -38,6 +38,9 @@ var TemplatablePattern = require('../core/templatablepattern').TemplatablePatter
 
 
 function in_array(what, arr) {
+  if (arr instanceof Set) {
+    return arr.has(what);
+  }
   return arr.indexOf(what) !== -1;
 }
 
@@ -73,10 +76,10 @@ var digit = /[0-9]/;
 // Dot "." must be distinguished from "..." and decimal
 var dot_pattern = /[^\d\.]/;
 
-var positionable_operators = (
+var positionable_operators = new Set((
   ">>> === !== &&= ??= ||= " +
   "<< && >= ** != == <= >> || ?? |> " +
-  "< / - + > : & % ? ^ | *").split(' ');
+  "< / - + > : & % ? ^ | *").split(' '));
 
 // IMPORTANT: this must be sorted longest to shortest or tokenizing many not work.
 // Also, you must update possitionable operators separately from punct
@@ -94,8 +97,9 @@ punct = punct.replace(/ /g, '|');
 var punct_pattern = new RegExp(punct);
 
 // words which should always start on new line.
-var line_starters = 'continue,try,throw,return,var,let,const,if,switch,case,default,for,while,break,function,import,export'.split(',');
-var reserved_words = line_starters.concat(['do', 'in', 'of', 'else', 'get', 'set', 'new', 'catch', 'finally', 'typeof', 'yield', 'async', 'await', 'from', 'as', 'class', 'extends']);
+var line_starters_array = 'continue,try,throw,return,var,let,const,if,switch,case,default,for,while,break,function,import,export'.split(',');
+var line_starters = new Set(line_starters_array);
+var reserved_words = line_starters_array.concat(['do', 'in', 'of', 'else', 'get', 'set', 'new', 'catch', 'finally', 'typeof', 'yield', 'async', 'await', 'from', 'as', 'class', 'extends']);
 var reserved_word_pattern = new RegExp('^(?:' + reserved_words.join('|') + ')$');
 
 // var template_pattern = /(?:(?:<\?php|<\?=)[\s\S]*?\?>)|(?:<%[\s\S]*?%>)/g;
@@ -582,5 +586,5 @@ Tokenizer.prototype._read_string_recursive = function(delimiter, allow_unescaped
 
 module.exports.Tokenizer = Tokenizer;
 module.exports.TOKEN = TOKEN;
-module.exports.positionable_operators = positionable_operators.slice();
-module.exports.line_starters = line_starters.slice();
+module.exports.positionable_operators = positionable_operators;
+module.exports.line_starters = line_starters;
