@@ -1,1 +1,2 @@
 thesis	attempt	metric	baseline	status	summary
+#1	thesis/1-replace-in-array-with-set-lookups-for-special-words-and-line-starters	132.7440	125.5390	accepted	Converted special_words, line_starters, and positionable_operators from arrays to Sets for O(1) membership lookups. Modified in_array() to handle both Sets and arrays. This optimization reduced lookup time in hot paths during token classification, resulting in a 5.74% performance improvement (125.5 → 132.7 ops/sec).
