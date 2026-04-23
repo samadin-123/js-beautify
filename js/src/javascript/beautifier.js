@@ -39,6 +39,9 @@ var TOKEN = require('./tokenizer').TOKEN;
 
 
 function in_array(what, arr) {
+  if (arr instanceof Set) {
+    return arr.has(what);
+  }
   return arr.indexOf(what) !== -1;
 }
 
@@ -63,7 +66,7 @@ function reserved_array(token, words) {
   return token && token.type === TOKEN.RESERVED && in_array(token.text, words);
 }
 // Unsure of what they mean, but they work. Worth cleaning up in future.
-var special_words = ['case', 'return', 'do', 'if', 'throw', 'else', 'await', 'break', 'continue', 'async'];
+var special_words = new Set(['case', 'return', 'do', 'if', 'throw', 'else', 'await', 'break', 'continue', 'async']);
 
 var validPositionValues = ['before-newline', 'after-newline', 'preserve-newline'];
 
